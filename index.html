@@ -1,0 +1,496 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+<title>Sammā · Suivi SEO</title>
+<style>
+  :root {
+    --paper: #FAF7F2;
+    --card: #FFFFFF;
+    --ink: #26221C;
+    --muted: #7A7266;
+    --line: #E5DED2;
+    --accent: #4A6B5D;
+    --accent-soft: #E4EBE7;
+    --gold: #A98B4F;
+    --gold-soft: #F1E9DA;
+    --warn: #B07D3C;
+    --far: #9A938A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font: 15px/1.55 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0 20px 64px;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+
+  header.top {
+    display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+    gap: 8px 24px; padding: 40px 0 20px; border-bottom: 1px solid var(--line); margin-bottom: 28px;
+  }
+  .eyebrow {
+    font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold);
+    margin: 0 0 6px; font-weight: 600;
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif; font-weight: 400;
+    font-size: 32px; line-height: 1.15; margin: 0; text-wrap: balance;
+  }
+  .updated { color: var(--muted); font-size: 13px; }
+  .updated strong { color: var(--ink); font-weight: 600; }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 30px; }
+  .kpi {
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px 14px;
+  }
+  .kpi .label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .kpi .value {
+    font-family: Georgia, serif; font-size: 34px; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi .sub { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+  .kpi .sub.up { color: var(--accent); font-weight: 600; }
+
+  section { margin-bottom: 34px; }
+  h2 {
+    font-family: Georgia, serif; font-weight: 400; font-size: 21px; margin: 0 0 4px;
+  }
+  .h2sub { color: var(--muted); font-size: 13px; margin: 0 0 14px; }
+
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 18px; }
+  .chart-wrap { width: 100%; }
+  .chart-wrap svg { display: block; width: 100%; height: auto; }
+  .legend { display: flex; flex-wrap: wrap; gap: 18px; font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .dash { width: 16px; height: 0; border-top: 2px dashed var(--accent); display: inline-block; opacity: .7; }
+
+  .tbl-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+  th {
+    text-align: left; font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; padding: 8px 12px; border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: baseline; }
+  tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; }
+  .q { font-weight: 600; }
+  .url { color: var(--ink); word-break: break-all; }
+  .url .path { font-weight: 600; }
+  .url .host { color: var(--muted); font-weight: 400; }
+
+  .pill {
+    display: inline-block; min-width: 44px; text-align: center; padding: 2px 9px;
+    border-radius: 99px; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums;
+  }
+  .pill.p1 { background: var(--accent-soft); color: var(--accent); }
+  .pill.p2 { background: var(--gold-soft); color: var(--warn); }
+  .pill.p3 { background: #EFECE6; color: var(--far); }
+
+  .note {
+    font-size: 13px; color: var(--muted); background: var(--gold-soft);
+    border-left: 3px solid var(--gold); padding: 10px 14px; border-radius: 0 4px 4px 0; margin-top: 14px;
+  }
+
+  .spark-cell { padding: 6px 12px; white-space: nowrap; }
+  .spark { display: block; }
+  .spark-empty { color: var(--far); font-size: 12px; }
+
+  .ga-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .mini-h {
+    font-family: Georgia, serif; font-weight: 400; font-size: 16px; margin: 2px 0 10px;
+  }
+
+  .lex-group { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin: 4px 0 2px; }
+  .lex { margin: 0; }
+  .lex > div {
+    display: grid; grid-template-columns: 220px 1fr; gap: 4px 24px;
+    padding: 13px 0; border-bottom: 1px solid var(--line);
+  }
+  .lex > div:last-child { border-bottom: none; }
+  .lex dt { font-family: Georgia, serif; font-size: 15.5px; color: var(--ink); }
+  .lex dd { margin: 0; color: var(--muted); font-size: 14px; }
+  .lex dd ul { margin: 6px 0 0; padding-left: 18px; }
+  .lex dd li { margin: 2px 0; }
+  @media (max-width: 560px) { .lex > div { grid-template-columns: 1fr; } }
+
+
+  footer { border-top: 1px solid var(--line); margin-top: 44px; padding-top: 16px; color: var(--muted); font-size: 12.5px; }
+  footer p { margin: 4px 0; max-width: 72ch; }
+
+  @media (max-width: 560px) {
+    h1 { font-size: 26px; }
+    .kpi .value { font-size: 28px; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow">Sammā · Suivi référencement</p>
+      <h1>Visibilité Google · sammahealth.com</h1>
+    </div>
+    <p class="updated">Mis à jour le <strong id="updated-date">…</strong> · source&nbsp;: Google Search Console</p>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <section>
+    <h2>Indexation du site</h2>
+    <p class="h2sub">Nombre de pages du site présentes dans l’index Google, jour par jour.</p>
+    <div class="panel">
+      <div class="chart-wrap" id="chart-coverage"></div>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--accent)"></i>Pages indexées</span>
+        <span><i class="dash"></i>Total des pages du site</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Apparitions dans les recherches</h2>
+    <p class="h2sub">Impressions (le site apparaît dans les résultats) et clics reçus, jour par jour.</p>
+    <div class="panel">
+      <div class="chart-wrap" id="chart-perf"></div>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--gold)"></i>Impressions</span>
+        <span><i class="dot" style="background:var(--accent)"></i>Clics</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Requêtes sur lesquelles Sammā apparaît</h2>
+    <p class="h2sub" id="queries-sub">Ce que les internautes ont tapé sur Google quand le site est apparu.</p>
+    <div class="panel tbl-wrap">
+      <table id="tbl-queries">
+        <thead><tr><th>Requête</th><th class="num">Impressions</th><th class="num">Clics</th><th class="num">Position</th><th>Évolution</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="note">Position = rang moyen dans les résultats Google (1 = premier résultat). En dessous de ~10, on est en première page. Un site récent démarre loin puis remonte à mesure que le contenu et la notoriété grandissent.<br>La mini-courbe « Évolution » suit la position au fil de nos relevés successifs : une courbe qui monte = position qui s'améliore. Un espace vide signifie qu'aucun relevé n'était disponible à cette date.</p>
+      <p class="note">Pourquoi ces positions semblent éloignées, alors que les pages ci-dessous ressortent souvent en première page&nbsp;? Google n'affiche ici que les mots-clés les plus fréquents, qui sont souvent des recherches générales et très concurrentielles (par exemple « médecine complémentaire genève »), où le site apparaît encore loin. Les recherches plus rares ou de marque, où le site sort en tête, ne sont pas listées individuellement par Google pour préserver la confidentialité des internautes. Le tableau des pages, lui, tient compte de toutes ces recherches, y compris celles que Google garde masquées&nbsp;: c'est pourquoi les positions y sont meilleures. Les deux tableaux sont donc justes, ils regardent simplement les données sous deux angles différents.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Pages les plus vues dans Google</h2>
+    <p class="h2sub" id="pages-sub"></p>
+    <div class="panel tbl-wrap">
+      <table id="tbl-pages">
+        <thead><tr><th>Page</th><th class="num">Impressions</th><th class="num">Clics</th><th class="num">Position</th><th>Évolution</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="note">La mini-courbe « Évolution » suit la position de la page au fil de nos relevés successifs : une courbe qui monte = position qui s'améliore. Un espace vide signifie qu'aucun relevé n'était disponible à cette date.</p>
+    </div>
+  </section>
+
+  <section id="ga-section" hidden>
+    <h2>Fréquentation du site</h2>
+    <p class="h2sub" id="ga-sub">Ce que font les visiteurs une fois sur le site · source&nbsp;: Google Analytics.</p>
+    <div class="kpis" id="ga-kpis"></div>
+    <div class="ga-grid">
+      <div class="panel tbl-wrap">
+        <h3 class="mini-h">Provenance des visites</h3>
+        <table id="tbl-channels">
+          <thead><tr><th>Canal</th><th class="num">Sessions</th><th class="num">Engagement</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="panel tbl-wrap">
+        <h3 class="mini-h">Pays des visiteurs</h3>
+        <table id="tbl-countries">
+          <thead><tr><th>Pays</th><th class="num">Visiteurs</th><th class="num">Nouveaux</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel tbl-wrap" style="margin-top:14px">
+      <h3 class="mini-h">Pages les plus consultées</h3>
+      <table id="tbl-ga-pages">
+        <thead><tr><th>Page</th><th class="num">Vues</th><th class="num">Visiteurs</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="note" id="ga-note"></p>
+    </div>
+  </section>
+
+  <section id="lexique">
+    <h2>Lexique</h2>
+    <p class="h2sub">Les termes techniques employés dans ce tableau de bord, en clair.</p>
+    <div class="panel">
+      <p class="lex-group">Visibilité dans Google</p>
+      <dl class="lex">
+        <div><dt>Référencement</dt><dd>L'ensemble de ce qui fait qu'un site apparaît dans les résultats de Google. Mieux un site est référencé, plus il ressort haut quand les internautes cherchent.</dd></div>
+        <div><dt>Indexation</dt><dd>Le fait qu'une page soit enregistrée par Google et donc susceptible d'apparaître dans les résultats. Une page non indexée reste invisible dans la recherche.</dd></div>
+        <div><dt>Total des pages du site</dt><dd>La liste des pages que le site déclare à Google (le « sitemap »). Elle sert de repère pour savoir combien de pages, sur l'ensemble, sont indexées.</dd></div>
+        <div><dt>Apparition (impression)</dt><dd>Chaque fois qu'une page du site s'affiche dans les résultats de Google pour une recherche, que l'internaute clique ou non.</dd></div>
+        <div><dt>Clic</dt><dd>Quand un internaute clique sur le lien du site depuis les résultats de Google et arrive sur le site.</dd></div>
+        <div><dt>Position</dt><dd>Le rang moyen du site dans les résultats de Google (1 = tout en haut). En dessous de 10, on est en première page.</dd></div>
+        <div><dt>Taux de clic</dt><dd>La part des apparitions qui se transforment en clics. Par exemple 5 clics pour 100 apparitions donnent 5 %.</dd></div>
+        <div><dt>Requête</dt><dd>Les mots tapés par l'internaute dans Google, aussi appelés mots-clés.</dd></div>
+        <div><dt>Mini-courbe d'évolution</dt><dd>Le petit graphique de la colonne « Évolution ». Il suit la position au fil de nos relevés successifs : une courbe qui monte signifie une position qui s'améliore.</dd></div>
+      </dl>
+      <p class="lex-group" style="margin-top:18px">Fréquentation du site</p>
+      <dl class="lex">
+        <div><dt>Session (visite)</dt><dd>Une venue d'un internaute sur le site. Une même personne peut faire plusieurs sessions.</dd></div>
+        <div><dt>Visiteur / nouveau visiteur</dt><dd>Une personne qui consulte le site. « Nouveau » désigne une première venue sur la période observée.</dd></div>
+        <div><dt>Taux d'engagement</dt><dd>La part des visites où l'internaute interagit vraiment (il reste, fait défiler, clique) plutôt que de repartir aussitôt.</dd></div>
+        <div><dt>Vues de pages</dt><dd>Le nombre total de pages consultées par les visiteurs sur la période.</dd></div>
+        <div><dt>Source des visites (canal)</dt><dd>Par où le visiteur est arrivé sur le site :
+          <ul>
+            <li><strong>Accès direct</strong> : adresse tapée directement ou lien enregistré.</li>
+            <li><strong>Recherche Google</strong> : via un résultat de recherche naturel (non payant).</li>
+            <li><strong>Réseaux sociaux</strong> : depuis Instagram, LinkedIn et autres.</li>
+            <li><strong>Sites référents</strong> : depuis un lien présent sur un autre site.</li>
+            <li><strong>Non attribué</strong> : origine que l'outil de mesure n'a pas pu déterminer.</li>
+          </ul>
+        </dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <footer>
+    <p>Données issues des exports Google Search Console, accumulées à chaque mise à jour&nbsp;: l’historique est conservé au-delà de la fenêtre de 3&nbsp;mois de Search Console.</p>
+    <p>Les positions sont des moyennes calculées par Google&nbsp;; elles fluctuent naturellement d’un jour à l’autre, la tendance sur plusieurs semaines est l’indicateur pertinent.</p>
+  </footer>
+</div>
+
+<script>
+const DATA = {"site":"sammahealth.com","updated":"2026-09-08","coverageDaily":[{"date":"2026-05-27","notIndexed":null,"indexed":null,"impressions":0},{"date":"2026-05-28","notIndexed":null,"indexed":null,"impressions":0},{"date":"2026-05-29","notIndexed":2,"indexed":1,"impressions":0},{"date":"2026-05-30","notIndexed":2,"indexed":1,"impressions":0},{"date":"2026-05-31","notIndexed":2,"indexed":1,"impressions":0},{"date":"2026-06-01","notIndexed":2,"indexed":1,"impressions":0},{"date":"2026-06-02","notIndexed":4,"indexed":5,"impressions":0},{"date":"2026-06-03","notIndexed":4,"indexed":5,"impressions":0},{"date":"2026-06-04","notIndexed":4,"indexed":5,"impressions":0},{"date":"2026-06-05","notIndexed":4,"indexed":5,"impressions":0},{"date":"2026-06-06","notIndexed":4,"indexed":5,"impressions":0},{"date":"2026-06-07","notIndexed":4,"indexed":5,"impressions":0},{"date":"2026-06-08","notIndexed":4,"indexed":5,"impressions":0},{"date":"2026-06-09","notIndexed":4,"indexed":5,"impressions":0},{"date":"2026-06-10","notIndexed":null,"indexed":null,"impressions":0},{"date":"2026-06-11","notIndexed":null,"indexed":null,"impressions":0},{"date":"2026-06-12","notIndexed":4,"indexed":5,"impressions":2},{"date":"2026-06-13","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-14","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-15","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-16","notIndexed":5,"indexed":4,"impressions":1},{"date":"2026-06-17","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-18","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-19","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-20","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-21","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-22","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-23","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-24","notIndexed":5,"indexed":4,"impressions":1},{"date":"2026-06-25","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-26","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-27","notIndexed":5,"indexed":4,"impressions":0},{"date":"2026-06-28","notIndexed":5,"indexed":4,"impressions":1},{"date":"2026-06-29","notIndexed":5,"indexed":4,"impressions":1},{"date":"2026-06-30","notIndexed":5,"indexed":4,"impressions":1},{"date":"2026-07-01","notIndexed":8,"indexed":17,"impressions":0},{"date":"2026-07-02","notIndexed":8,"indexed":17,"impressions":2},{"date":"2026-07-03","notIndexed":8,"indexed":17,"impressions":3},{"date":"2026-07-04","notIndexed":8,"indexed":17,"impressions":0},{"date":"2026-07-05","notIndexed":8,"indexed":17,"impressions":3},{"date":"2026-07-06","notIndexed":8,"indexed":17,"impressions":3},{"date":"2026-07-07","notIndexed":8,"indexed":17,"impressions":1},{"date":"2026-07-08","notIndexed":8,"indexed":17,"impressions":1},{"date":"2026-07-09","notIndexed":8,"indexed":17,"impressions":1},{"date":"2026-07-10","notIndexed":8,"indexed":17,"impressions":1},{"date":"2026-07-11","notIndexed":7,"indexed":19,"impressions":1},{"date":"2026-07-12","notIndexed":7,"indexed":19,"impressions":0},{"date":"2026-07-13","notIndexed":7,"indexed":19,"impressions":1},{"date":"2026-07-14","notIndexed":7,"indexed":19,"impressions":0},{"date":"2026-07-15","notIndexed":7,"indexed":19,"impressions":1},{"date":"2026-07-16","notIndexed":7,"indexed":19,"impressions":4},{"date":"2026-07-17","notIndexed":7,"indexed":19,"impressions":0},{"date":"2026-07-18","notIndexed":7,"indexed":19,"impressions":0},{"date":"2026-07-19","notIndexed":7,"indexed":19,"impressions":2},{"date":"2026-07-20","notIndexed":7,"indexed":19,"impressions":5},{"date":"2026-07-21","notIndexed":7,"indexed":19,"impressions":6},{"date":"2026-07-22","notIndexed":7,"indexed":19,"impressions":2},{"date":"2026-07-23","notIndexed":7,"indexed":19,"impressions":3},{"date":"2026-07-24","notIndexed":7,"indexed":19,"impressions":1},{"date":"2026-07-25","notIndexed":7,"indexed":20,"impressions":2},{"date":"2026-07-26","notIndexed":7,"indexed":20,"impressions":0},{"date":"2026-07-27","notIndexed":7,"indexed":20,"impressions":0},{"date":"2026-07-28","notIndexed":7,"indexed":20,"impressions":2},{"date":"2026-07-29","notIndexed":7,"indexed":20,"impressions":2},{"date":"2026-07-30","notIndexed":7,"indexed":20,"impressions":6},{"date":"2026-07-31","notIndexed":7,"indexed":20,"impressions":1},{"date":"2026-08-01","notIndexed":7,"indexed":20,"impressions":0},{"date":"2026-08-02","notIndexed":7,"indexed":20,"impressions":0},{"date":"2026-08-03","notIndexed":7,"indexed":20,"impressions":1},{"date":"2026-08-04","notIndexed":7,"indexed":20,"impressions":4},{"date":"2026-08-05","notIndexed":7,"indexed":20,"impressions":1},{"date":"2026-08-06","notIndexed":9,"indexed":19,"impressions":4},{"date":"2026-08-07","notIndexed":9,"indexed":19,"impressions":1},{"date":"2026-08-08","notIndexed":9,"indexed":19,"impressions":1},{"date":"2026-08-09","notIndexed":9,"indexed":19,"impressions":0},{"date":"2026-08-10","notIndexed":9,"indexed":19,"impressions":0},{"date":"2026-08-11","notIndexed":9,"indexed":19,"impressions":2},{"date":"2026-08-12","notIndexed":9,"indexed":19,"impressions":1},{"date":"2026-08-13","notIndexed":9,"indexed":19,"impressions":1},{"date":"2026-08-14","notIndexed":9,"indexed":19,"impressions":2},{"date":"2026-08-15","notIndexed":9,"indexed":19,"impressions":1},{"date":"2026-08-16","notIndexed":9,"indexed":19,"impressions":3},{"date":"2026-08-17","notIndexed":9,"indexed":19,"impressions":2},{"date":"2026-08-18","notIndexed":36,"indexed":43,"impressions":2},{"date":"2026-08-19","notIndexed":36,"indexed":43,"impressions":4},{"date":"2026-08-20","notIndexed":36,"indexed":43,"impressions":2},{"date":"2026-08-21","notIndexed":36,"indexed":43,"impressions":4},{"date":"2026-08-22","notIndexed":38,"indexed":36,"impressions":6},{"date":"2026-08-23","notIndexed":38,"indexed":36,"impressions":11},{"date":"2026-08-24","notIndexed":38,"indexed":36,"impressions":14},{"date":"2026-08-25","notIndexed":38,"indexed":36,"impressions":21},{"date":"2026-08-26","notIndexed":38,"indexed":36,"impressions":8},{"date":"2026-08-27","notIndexed":38,"indexed":36,"impressions":11},{"date":"2026-08-28","notIndexed":38,"indexed":36,"impressions":9},{"date":"2026-08-29","notIndexed":40,"indexed":36,"impressions":13},{"date":"2026-08-30","notIndexed":40,"indexed":36,"impressions":13},{"date":"2026-08-31","notIndexed":40,"indexed":36,"impressions":10},{"date":"2026-09-01","notIndexed":40,"indexed":36,"impressions":7},{"date":"2026-09-02","notIndexed":40,"indexed":36,"impressions":7},{"date":"2026-09-03","notIndexed":40,"indexed":36,"impressions":13},{"date":"2026-09-04","notIndexed":40,"indexed":36,"impressions":12}],"coverageIssues":[{"reason":"Autre page avec balise canonique correcte","pages":8},{"reason":"Page avec redirection","pages":4},{"reason":"Exclue par la balise \"noindex\"","pages":1},{"reason":"Introuvable (404)","pages":1},{"reason":"Bloquée par le fichier robots.txt","pages":1},{"reason":"Détectée, actuellement non indexée","pages":20},{"reason":"Explorée, actuellement non indexée","pages":4},{"reason":"Page en double : Google n'a pas choisi la même URL canonique que l'utilisateur","pages":1}],"perfDaily":[{"date":"2026-05-27","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-05-28","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-05-29","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-05-30","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-05-31","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-01","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-02","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-03","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-04","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-05","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-06","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-07","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-08","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-09","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-10","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-11","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-12","clicks":0,"impressions":2,"ctr":0,"position":1},{"date":"2026-06-13","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-14","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-15","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-16","clicks":0,"impressions":1,"ctr":0,"position":12},{"date":"2026-06-17","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-18","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-19","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-20","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-21","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-22","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-23","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-24","clicks":0,"impressions":1,"ctr":0,"position":9},{"date":"2026-06-25","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-26","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-27","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-06-28","clicks":0,"impressions":1,"ctr":0,"position":21},{"date":"2026-06-29","clicks":0,"impressions":1,"ctr":0,"position":1},{"date":"2026-06-30","clicks":0,"impressions":1,"ctr":0,"position":1},{"date":"2026-07-01","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-07-02","clicks":1,"impressions":2,"ctr":50,"position":4.5},{"date":"2026-07-03","clicks":1,"impressions":3,"ctr":33.33,"position":1},{"date":"2026-07-04","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-07-05","clicks":0,"impressions":3,"ctr":0,"position":40.7},{"date":"2026-07-06","clicks":0,"impressions":3,"ctr":0,"position":17.7},{"date":"2026-07-07","clicks":1,"impressions":1,"ctr":100,"position":4},{"date":"2026-07-08","clicks":0,"impressions":1,"ctr":0,"position":14},{"date":"2026-07-09","clicks":0,"impressions":1,"ctr":0,"position":30},{"date":"2026-07-10","clicks":0,"impressions":1,"ctr":0,"position":5},{"date":"2026-07-11","clicks":0,"impressions":1,"ctr":0,"position":5},{"date":"2026-07-12","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-07-13","clicks":1,"impressions":1,"ctr":100,"position":2},{"date":"2026-07-14","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-07-15","clicks":0,"impressions":1,"ctr":0,"position":42},{"date":"2026-07-16","clicks":0,"impressions":4,"ctr":0,"position":2.2},{"date":"2026-07-17","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-07-18","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-07-19","clicks":0,"impressions":2,"ctr":0,"position":1.5},{"date":"2026-07-20","clicks":0,"impressions":5,"ctr":0,"position":3},{"date":"2026-07-21","clicks":0,"impressions":6,"ctr":0,"position":7.5},{"date":"2026-07-22","clicks":0,"impressions":2,"ctr":0,"position":2.5},{"date":"2026-07-23","clicks":1,"impressions":3,"ctr":33.33,"position":5.3},{"date":"2026-07-24","clicks":0,"impressions":1,"ctr":0,"position":8},{"date":"2026-07-25","clicks":0,"impressions":2,"ctr":0,"position":1},{"date":"2026-07-26","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-07-27","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-07-28","clicks":0,"impressions":2,"ctr":0,"position":1},{"date":"2026-07-29","clicks":0,"impressions":2,"ctr":0,"position":2.5},{"date":"2026-07-30","clicks":1,"impressions":6,"ctr":16.67,"position":1.7},{"date":"2026-07-31","clicks":0,"impressions":1,"ctr":0,"position":1},{"date":"2026-08-01","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-08-02","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-08-03","clicks":1,"impressions":1,"ctr":100,"position":2},{"date":"2026-08-04","clicks":0,"impressions":4,"ctr":0,"position":4},{"date":"2026-08-05","clicks":0,"impressions":1,"ctr":0,"position":1},{"date":"2026-08-06","clicks":1,"impressions":4,"ctr":25,"position":3},{"date":"2026-08-07","clicks":0,"impressions":1,"ctr":0,"position":5},{"date":"2026-08-08","clicks":0,"impressions":1,"ctr":0,"position":11},{"date":"2026-08-09","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-08-10","clicks":0,"impressions":0,"ctr":null,"position":null},{"date":"2026-08-11","clicks":1,"impressions":2,"ctr":50,"position":32},{"date":"2026-08-12","clicks":0,"impressions":1,"ctr":0,"position":51},{"date":"2026-08-13","clicks":0,"impressions":1,"ctr":0,"position":4},{"date":"2026-08-14","clicks":0,"impressions":2,"ctr":0,"position":36},{"date":"2026-08-15","clicks":0,"impressions":1,"ctr":0,"position":62},{"date":"2026-08-16","clicks":0,"impressions":3,"ctr":0,"position":2},{"date":"2026-08-17","clicks":0,"impressions":2,"ctr":0,"position":1.5},{"date":"2026-08-18","clicks":1,"impressions":2,"ctr":50,"position":2},{"date":"2026-08-19","clicks":0,"impressions":4,"ctr":0,"position":2},{"date":"2026-08-20","clicks":0,"impressions":2,"ctr":0,"position":2},{"date":"2026-08-21","clicks":0,"impressions":4,"ctr":0,"position":59.8},{"date":"2026-08-22","clicks":0,"impressions":6,"ctr":0,"position":56.5},{"date":"2026-08-23","clicks":0,"impressions":11,"ctr":0,"position":43.4},{"date":"2026-08-24","clicks":0,"impressions":14,"ctr":0,"position":51},{"date":"2026-08-25","clicks":2,"impressions":21,"ctr":9.52,"position":28.4},{"date":"2026-08-26","clicks":0,"impressions":8,"ctr":0,"position":43.9},{"date":"2026-08-27","clicks":3,"impressions":11,"ctr":27.27,"position":23.5},{"date":"2026-08-28","clicks":1,"impressions":9,"ctr":11.11,"position":38.3},{"date":"2026-08-29","clicks":0,"impressions":13,"ctr":0,"position":56.9},{"date":"2026-08-30","clicks":0,"impressions":13,"ctr":0,"position":47.7},{"date":"2026-08-31","clicks":0,"impressions":10,"ctr":0,"position":61},{"date":"2026-09-01","clicks":0,"impressions":7,"ctr":0,"position":39.1},{"date":"2026-09-02","clicks":0,"impressions":7,"ctr":0,"position":42.9},{"date":"2026-09-03","clicks":0,"impressions":13,"ctr":0,"position":32.4},{"date":"2026-09-04","clicks":2,"impressions":12,"ctr":16.67,"position":25},{"date":"2026-09-05","clicks":0,"impressions":7,"ctr":0,"position":36.9},{"date":"2026-09-06","clicks":0,"impressions":9,"ctr":0,"position":35}],"snapshots":[{"exportDate":"2026-08-24","queries":[{"name":"médecine intégrative genève","clicks":0,"impressions":6,"ctr":0,"position":65},{"name":"docteur medecine alternative geneve","clicks":0,"impressions":3,"ctr":0,"position":38.67},{"name":"samma","clicks":0,"impressions":3,"ctr":0,"position":39},{"name":"acupuncture","clicks":0,"impressions":3,"ctr":0,"position":44.33},{"name":"acupuncture geneve","clicks":0,"impressions":2,"ctr":0,"position":46.5},{"name":"sama health","clicks":0,"impressions":1,"ctr":0,"position":2}],"pages":[{"name":"https://sammahealth.com/fr/","clicks":4,"impressions":15,"ctr":26.67,"position":4.67},{"name":"https://sammahealth.com/","clicks":2,"impressions":37,"ctr":5.41,"position":6.24},{"name":"https://sammahealth.com/blog/medecine-integrative-geneve","clicks":2,"impressions":13,"ctr":15.38,"position":12.08},{"name":"https://sammahealth.com/fr/formulas.html","clicks":1,"impressions":19,"ctr":5.26,"position":3.84},{"name":"https://sammahealth.com/fr/privacy.html","clicks":1,"impressions":15,"ctr":6.67,"position":9.2},{"name":"https://sammahealth.com/fr/purpose.html","clicks":0,"impressions":25,"ctr":0,"position":5.28},{"name":"https://sammahealth.com/practices.html","clicks":0,"impressions":12,"ctr":0,"position":2.67},{"name":"https://sammahealth.com/practices/acupuncture","clicks":0,"impressions":11,"ctr":0,"position":4.55},{"name":"https://sammahealth.com/fr/blog/medecine-complementaire-geneve","clicks":0,"impressions":9,"ctr":0,"position":56.22},{"name":"https://sammahealth.com/fr/practices/acupuncture.html","clicks":0,"impressions":7,"ctr":0,"position":22.86},{"name":"https://sammahealth.com/fr/practices.html","clicks":0,"impressions":5,"ctr":0,"position":4.6},{"name":"https://sammahealth.com/fr/practices/pulsed-electromagnetic-field-therapy.html","clicks":0,"impressions":5,"ctr":0,"position":6.2},{"name":"https://sammahealth.com/formulas.html","clicks":0,"impressions":4,"ctr":0,"position":5.25},{"name":"https://sammahealth.com/fr/practices/photobiomodulation.html","clicks":0,"impressions":4,"ctr":0,"position":5.25},{"name":"https://sammahealth.com/fr/memberships.html","clicks":0,"impressions":4,"ctr":0,"position":7.75},{"name":"https://sammahealth.com/practices/chinese-herbal-medicine","clicks":0,"impressions":3,"ctr":0,"position":3},{"name":"https://sammahealth.com/fr/assessment.html","clicks":0,"impressions":3,"ctr":0,"position":5.67},{"name":"https://sammahealth.com/fr/practices/meditation-dharma.html","clicks":0,"impressions":2,"ctr":0,"position":5.5},{"name":"https://sammahealth.com/fr/practices/yoga-nidra.html","clicks":0,"impressions":1,"ctr":0,"position":6},{"name":"https://sammahealth.com/fr/practices/acupuncture","clicks":0,"impressions":1,"ctr":0,"position":72}],"countries":[{"name":"Suisse","clicks":7,"impressions":52,"ctr":13.46,"position":7.31},{"name":"France","clicks":2,"impressions":23,"ctr":8.7,"position":6.22},{"name":"Suède","clicks":1,"impressions":1,"ctr":100,"position":3},{"name":"Philippines","clicks":0,"impressions":6,"ctr":0,"position":52},{"name":"États-Unis","clicks":0,"impressions":5,"ctr":0,"position":2.2},{"name":"Mexique","clicks":0,"impressions":2,"ctr":0,"position":2},{"name":"Inde","clicks":0,"impressions":2,"ctr":0,"position":17.5},{"name":"Indonésie","clicks":0,"impressions":2,"ctr":0,"position":55.5},{"name":"Brésil","clicks":0,"impressions":1,"ctr":0,"position":1},{"name":"Japon","clicks":0,"impressions":1,"ctr":0,"position":1},{"name":"Ukraine","clicks":0,"impressions":1,"ctr":0,"position":5},{"name":"Jordanie","clicks":0,"impressions":1,"ctr":0,"position":14},{"name":"Colombie","clicks":0,"impressions":1,"ctr":0,"position":43},{"name":"Égypte","clicks":0,"impressions":1,"ctr":0,"position":51},{"name":"République Dominicaine","clicks":0,"impressions":1,"ctr":0,"position":60},{"name":"Israël","clicks":0,"impressions":1,"ctr":0,"position":61},{"name":"Nigéria","clicks":0,"impressions":1,"ctr":0,"position":62},{"name":"Turquie","clicks":0,"impressions":1,"ctr":0,"position":62}],"devices":[{"name":"Ordinateur","clicks":9,"impressions":60,"ctr":15,"position":17.27},{"name":"Mobile","clicks":1,"impressions":43,"ctr":2.33,"position":7.51}]},{"exportDate":"2026-08-26","queries":[{"name":"médecine intégrative genève","clicks":0,"impressions":10,"ctr":0,"position":63},{"name":"docteur medecine alternative geneve","clicks":0,"impressions":8,"ctr":0,"position":35.25},{"name":"samma","clicks":0,"impressions":4,"ctr":0,"position":45.25},{"name":"acupuncture","clicks":0,"impressions":3,"ctr":0,"position":44.33},{"name":"acupuncture geneve","clicks":0,"impressions":2,"ctr":0,"position":46.5},{"name":"sama health","clicks":0,"impressions":1,"ctr":0,"position":2}],"pages":[{"name":"https://sammahealth.com/fr/","clicks":4,"impressions":16,"ctr":25,"position":4.81},{"name":"https://sammahealth.com/","clicks":2,"impressions":38,"ctr":5.26,"position":7.76},{"name":"https://sammahealth.com/blog/medecine-integrative-geneve","clicks":2,"impressions":13,"ctr":15.38,"position":12.08},{"name":"https://sammahealth.com/fr/formulas.html","clicks":1,"impressions":19,"ctr":5.26,"position":3.84},{"name":"https://sammahealth.com/fr/privacy.html","clicks":1,"impressions":15,"ctr":6.67,"position":9.2},{"name":"https://sammahealth.com/fr/purpose.html","clicks":0,"impressions":25,"ctr":0,"position":5.28},{"name":"https://sammahealth.com/fr/blog/medecine-complementaire-geneve","clicks":0,"impressions":18,"ctr":0,"position":50.67},{"name":"https://sammahealth.com/practices.html","clicks":0,"impressions":12,"ctr":0,"position":2.67},{"name":"https://sammahealth.com/practices/acupuncture","clicks":0,"impressions":11,"ctr":0,"position":4.55},{"name":"https://sammahealth.com/fr/practices/acupuncture.html","clicks":0,"impressions":7,"ctr":0,"position":22.86},{"name":"https://sammahealth.com/fr/practices.html","clicks":0,"impressions":5,"ctr":0,"position":4.6},{"name":"https://sammahealth.com/fr/practices/pulsed-electromagnetic-field-therapy.html","clicks":0,"impressions":5,"ctr":0,"position":6.2},{"name":"https://sammahealth.com/formulas.html","clicks":0,"impressions":4,"ctr":0,"position":5.25},{"name":"https://sammahealth.com/fr/practices/photobiomodulation.html","clicks":0,"impressions":4,"ctr":0,"position":5.25},{"name":"https://sammahealth.com/fr/memberships.html","clicks":0,"impressions":4,"ctr":0,"position":7.75},{"name":"https://sammahealth.com/practices/chinese-herbal-medicine","clicks":0,"impressions":3,"ctr":0,"position":3},{"name":"https://sammahealth.com/fr/assessment.html","clicks":0,"impressions":3,"ctr":0,"position":5.67},{"name":"https://sammahealth.com/fr/practices/meditation-dharma.html","clicks":0,"impressions":2,"ctr":0,"position":5.5},{"name":"https://sammahealth.com/fr/practices/yoga-nidra.html","clicks":0,"impressions":1,"ctr":0,"position":6},{"name":"https://sammahealth.com/fr/practices/acupuncture","clicks":0,"impressions":1,"ctr":0,"position":72}],"countries":[{"name":"Suisse","clicks":7,"impressions":53,"ctr":13.21,"position":7.3},{"name":"France","clicks":2,"impressions":23,"ctr":8.7,"position":6.22},{"name":"Suède","clicks":1,"impressions":1,"ctr":100,"position":3},{"name":"Philippines","clicks":0,"impressions":12,"ctr":0,"position":47.5},{"name":"États-Unis","clicks":0,"impressions":5,"ctr":0,"position":2.2},{"name":"Inde","clicks":0,"impressions":3,"ctr":0,"position":32.33},{"name":"Indonésie","clicks":0,"impressions":3,"ctr":0,"position":46.67},{"name":"Mexique","clicks":0,"impressions":2,"ctr":0,"position":2},{"name":"Brésil","clicks":0,"impressions":1,"ctr":0,"position":1},{"name":"Japon","clicks":0,"impressions":1,"ctr":0,"position":1},{"name":"Ukraine","clicks":0,"impressions":1,"ctr":0,"position":5},{"name":"Jordanie","clicks":0,"impressions":1,"ctr":0,"position":14},{"name":"Colombie","clicks":0,"impressions":1,"ctr":0,"position":43},{"name":"Égypte","clicks":0,"impressions":1,"ctr":0,"position":51},{"name":"Costa Rica","clicks":0,"impressions":1,"ctr":0,"position":57},{"name":"République Dominicaine","clicks":0,"impressions":1,"ctr":0,"position":60},{"name":"Israël","clicks":0,"impressions":1,"ctr":0,"position":61},{"name":"Nigéria","clicks":0,"impressions":1,"ctr":0,"position":62},{"name":"Turquie","clicks":0,"impressions":1,"ctr":0,"position":62},{"name":"Royaume-Uni","clicks":0,"impressions":1,"ctr":0,"position":64}],"devices":[{"name":"Ordinateur","clicks":9,"impressions":70,"ctr":12.86,"position":21.51},{"name":"Mobile","clicks":1,"impressions":44,"ctr":2.27,"position":7.5}]},{"exportDate":"2026-09-08","queries":[{"name":"samma","clicks":1,"impressions":13,"ctr":7.69,"position":37},{"name":"médecine intégrative genève","clicks":0,"impressions":74,"ctr":0,"position":60.97},{"name":"docteur medecine alternative geneve","clicks":0,"impressions":40,"ctr":0,"position":33.12},{"name":"medecine alternative geneve","clicks":0,"impressions":7,"ctr":0,"position":36.71},{"name":"acupuncture","clicks":0,"impressions":4,"ctr":0,"position":45},{"name":"acupuncture geneve","clicks":0,"impressions":2,"ctr":0,"position":46.5},{"name":"sama health","clicks":0,"impressions":1,"ctr":0,"position":2},{"name":"acupuncture autour de moi","clicks":0,"impressions":1,"ctr":0,"position":46},{"name":"docteur sun geneve","clicks":0,"impressions":1,"ctr":0,"position":50},{"name":"pbm center montreux","clicks":0,"impressions":1,"ctr":0,"position":62},{"name":"médecine complémentaire","clicks":0,"impressions":1,"ctr":0,"position":70},{"name":"acupuncture lamal","clicks":0,"impressions":1,"ctr":0,"position":81}],"pages":[{"name":"https://sammahealth.com/fr/","clicks":7,"impressions":31,"ctr":22.58,"position":6.23},{"name":"https://sammahealth.com/","clicks":3,"impressions":49,"ctr":6.12,"position":11.96},{"name":"https://sammahealth.com/fr/about","clicks":3,"impressions":3,"ctr":100,"position":8.67},{"name":"https://sammahealth.com/blog/medecine-integrative-geneve","clicks":2,"impressions":13,"ctr":15.38,"position":12.08},{"name":"https://sammahealth.com/fr/formulas.html","clicks":1,"impressions":19,"ctr":5.26,"position":3.84},{"name":"https://sammahealth.com/fr/privacy.html","clicks":1,"impressions":17,"ctr":5.88,"position":9},{"name":"https://sammahealth.com/fr/memberships.html","clicks":1,"impressions":7,"ctr":14.29,"position":6.14},{"name":"https://sammahealth.com/fr/blog/medecine-complementaire-geneve","clicks":0,"impressions":123,"ctr":0,"position":50.15},{"name":"https://sammahealth.com/fr/purpose.html","clicks":0,"impressions":25,"ctr":0,"position":5.28},{"name":"https://sammahealth.com/practices/acupuncture","clicks":0,"impressions":16,"ctr":0,"position":5.38},{"name":"https://sammahealth.com/practices.html","clicks":0,"impressions":13,"ctr":0,"position":2.85},{"name":"https://sammahealth.com/fr/practices/acupuncture","clicks":0,"impressions":8,"ctr":0,"position":28.75},{"name":"https://sammahealth.com/fr/practices/acupuncture.html","clicks":0,"impressions":7,"ctr":0,"position":22.86},{"name":"https://sammahealth.com/fr/practices.html","clicks":0,"impressions":5,"ctr":0,"position":4.6},{"name":"https://sammahealth.com/formulas.html","clicks":0,"impressions":5,"ctr":0,"position":5},{"name":"https://sammahealth.com/fr/practices/pulsed-electromagnetic-field-therapy.html","clicks":0,"impressions":5,"ctr":0,"position":6.2},{"name":"https://sammahealth.com/fr/memberships","clicks":0,"impressions":4,"ctr":0,"position":4.75},{"name":"https://sammahealth.com/fr/practices/photobiomodulation.html","clicks":0,"impressions":4,"ctr":0,"position":5.25},{"name":"https://sammahealth.com/fr/purpose","clicks":0,"impressions":4,"ctr":0,"position":10.75},{"name":"https://sammahealth.com/fr/blog/acupuncture-geneve","clicks":0,"impressions":4,"ctr":0,"position":24},{"name":"https://sammahealth.com/practices/chinese-herbal-medicine","clicks":0,"impressions":3,"ctr":0,"position":3},{"name":"https://sammahealth.com/about","clicks":0,"impressions":3,"ctr":0,"position":5},{"name":"https://sammahealth.com/fr/assessment.html","clicks":0,"impressions":3,"ctr":0,"position":5.67},{"name":"https://sammahealth.com/fr/practices/meditation-dharma.html","clicks":0,"impressions":3,"ctr":0,"position":7},{"name":"https://sammahealth.com/fr/events","clicks":0,"impressions":3,"ctr":0,"position":7.33},{"name":"https://sammahealth.com/waitlist","clicks":0,"impressions":3,"ctr":0,"position":8.33},{"name":"https://sammahealth.com/practices/photobiomodulation","clicks":0,"impressions":3,"ctr":0,"position":33.33},{"name":"https://sammahealth.com/practices","clicks":0,"impressions":2,"ctr":0,"position":4},{"name":"https://sammahealth.com/fr/terms","clicks":0,"impressions":2,"ctr":0,"position":7},{"name":"https://sammahealth.com/practices/hyperbaric-oxygenation","clicks":0,"impressions":2,"ctr":0,"position":21.5},{"name":"https://sammahealth.com/fr/practices/yoga-nidra.html","clicks":0,"impressions":1,"ctr":0,"position":6},{"name":"https://sammahealth.com/fr/privacy","clicks":0,"impressions":1,"ctr":0,"position":7}],"countries":[{"name":"Suisse","clicks":12,"impressions":90,"ctr":13.33,"position":13.29},{"name":"France","clicks":4,"impressions":30,"ctr":13.33,"position":6.93},{"name":"Espagne","clicks":1,"impressions":2,"ctr":50,"position":5},{"name":"Suède","clicks":1,"impressions":1,"ctr":100,"position":3},{"name":"Philippines","clicks":0,"impressions":33,"ctr":0,"position":50.79},{"name":"Indonésie","clicks":0,"impressions":22,"ctr":0,"position":48.91},{"name":"Inde","clicks":0,"impressions":15,"ctr":0,"position":48},{"name":"Corée du Sud","clicks":0,"impressions":11,"ctr":0,"position":53.27},{"name":"États-Unis","clicks":0,"impressions":9,"ctr":0,"position":7.11},{"name":"Chili","clicks":0,"impressions":4,"ctr":0,"position":46},{"name":"Égypte","clicks":0,"impressions":4,"ctr":0,"position":52},{"name":"Maroc","clicks":0,"impressions":3,"ctr":0,"position":24},{"name":"Argentine","clicks":0,"impressions":3,"ctr":0,"position":30},{"name":"Éthiopie","clicks":0,"impressions":3,"ctr":0,"position":50.33},{"name":"Pérou","clicks":0,"impressions":3,"ctr":0,"position":50.67},{"name":"Nigéria","clicks":0,"impressions":3,"ctr":0,"position":60.67},{"name":"Mexique","clicks":0,"impressions":2,"ctr":0,"position":2},{"name":"Brésil","clicks":0,"impressions":2,"ctr":0,"position":29.5},{"name":"Jordanie","clicks":0,"impressions":2,"ctr":0,"position":38},{"name":"Sri Lanka","clicks":0,"impressions":2,"ctr":0,"position":46.5},{"name":"Thaïlande","clicks":0,"impressions":2,"ctr":0,"position":48},{"name":"Colombie","clicks":0,"impressions":2,"ctr":0,"position":51},{"name":"Bolivie","clicks":0,"impressions":2,"ctr":0,"position":59.5},{"name":"Ouzbékistan","clicks":0,"impressions":2,"ctr":0,"position":60.5},{"name":"Canada","clicks":0,"impressions":1,"ctr":0,"position":1},{"name":"Japon","clicks":0,"impressions":1,"ctr":0,"position":1},{"name":"Ukraine","clicks":0,"impressions":1,"ctr":0,"position":5},{"name":"République tchèque","clicks":0,"impressions":1,"ctr":0,"position":7},{"name":"Pays-Bas","clicks":0,"impressions":1,"ctr":0,"position":10},{"name":"Costa Rica","clicks":0,"impressions":1,"ctr":0,"position":57},{"name":"Équateur","clicks":0,"impressions":1,"ctr":0,"position":58},{"name":"Micronésie","clicks":0,"impressions":1,"ctr":0,"position":58},{"name":"Burkina Faso","clicks":0,"impressions":1,"ctr":0,"position":59},{"name":"République Dominicaine","clicks":0,"impressions":1,"ctr":0,"position":60},{"name":"Israël","clicks":0,"impressions":1,"ctr":0,"position":61},{"name":"Kenya","clicks":0,"impressions":1,"ctr":0,"position":62},{"name":"Pakistan","clicks":0,"impressions":1,"ctr":0,"position":62},{"name":"Turquie","clicks":0,"impressions":1,"ctr":0,"position":62},{"name":"Royaume-Uni","clicks":0,"impressions":1,"ctr":0,"position":64},{"name":"Guatemala","clicks":0,"impressions":1,"ctr":0,"position":64}],"devices":[{"name":"Ordinateur","clicks":13,"impressions":198,"ctr":6.57,"position":36.21},{"name":"Mobile","clicks":5,"impressions":70,"ctr":7.14,"position":10.99}]}],"events":[{"date":"2026-08-19","label":"Fix URLs propres + sitemap soumis"}],"analytics":{"exportDate":"2026-09-08","rangeStart":"2026-06-10","rangeEnd":"2026-09-07","channels":[{"name":"Direct","sessions":64,"engaged":43,"engagementRate":67},{"name":"Organic Search","sessions":26,"engaged":20,"engagementRate":77},{"name":"Referral","sessions":9,"engaged":7,"engagementRate":78},{"name":"Organic Social","sessions":6,"engaged":4,"engagementRate":67},{"name":"Unassigned","sessions":3,"engaged":0,"engagementRate":0}],"countries":[{"name":"Switzerland","users":15,"newUsers":13},{"name":"France","users":8,"newUsers":1},{"name":"Germany","users":3,"newUsers":3},{"name":"Lithuania","users":3,"newUsers":3},{"name":"United States","users":3,"newUsers":1},{"name":"China","users":1,"newUsers":1},{"name":"Japan","users":1,"newUsers":0},{"name":"United Kingdom","users":1,"newUsers":1}],"pagesProd":[{"path":"/","views":105,"users":20},{"path":"/practices.html","views":46,"users":10},{"path":"/purpose.html","views":32,"users":8},{"path":"/index.html","views":26,"users":6},{"path":"/practices/acupuncture.html","views":17,"users":7},{"path":"/fr/","views":12,"users":6},{"path":"/fr/practices/hyperbaric-oxygen-therapy","views":8,"users":2},{"path":"/waitlist.html","views":8,"users":2},{"path":"/fr/practices","views":7,"users":3},{"path":"/practices","views":7,"users":3}],"prodViews":344,"stagingViews":71,"devices":[],"os":[]},"siteInfo":{"sitemapUrls":48,"asOf":"2026-09-08","note":"48 (inchangé depuis le 25/08). Retrait pages team/founders/events lié au retrait Oana ; 54 avant."}};
+
+const $ = (id) => document.getElementById(id);
+const fmtDate = (iso) => {
+  const [y, m, d] = iso.split('-');
+  const mois = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+  return `${+d} ${mois[+m - 1]} ${y}`;
+};
+const fmtShort = (iso) => {
+  const [ , m, d] = iso.split('-');
+  const mois = ['janv','févr','mars','avr','mai','juin','juil','août','sept','oct','nov','déc'];
+  return `${+d} ${mois[+m - 1]}`;
+};
+
+/* ---------- KPIs ---------- */
+$('updated-date').textContent = fmtDate(DATA.updated);
+const cov = DATA.coverageDaily;
+const lastCov = cov[cov.length - 1];
+const evDate = DATA.events.length ? DATA.events[0].date : null;
+const preFix = evDate ? cov.filter(c => c.date < '2026-08-18').slice(-1)[0] : null;
+const perf = DATA.perfDaily;
+const totClicks = perf.reduce((s, p) => s + (p.clicks || 0), 0);
+const totImp = perf.reduce((s, p) => s + (p.impressions || 0), 0);
+
+const sitePages = DATA.siteInfo ? DATA.siteInfo.sitemapUrls : null;
+const kpis = [
+  { label: 'Pages indexées', value: sitePages ? `${lastCov.indexed} / ${sitePages}` : lastCov.indexed,
+    sub: (sitePages ? 'pages du site · ' : '') + (preFix ? `+${lastCov.indexed - preFix.indexed} depuis le fix` : `au ${fmtShort(lastCov.date)}`),
+    up: preFix && lastCov.indexed > preFix.indexed },
+  { label: 'Impressions · 3 mois', value: totImp, sub: 'apparitions dans les résultats' },
+  { label: 'Clics · 3 mois', value: totClicks, sub: 'visites depuis Google' },
+];
+$('kpis').innerHTML = kpis.map(k => `
+  <div class="kpi">
+    <div class="label">${k.label}</div>
+    <div class="value">${k.value}</div>
+    <div class="sub${k.up ? ' up' : ''}">${k.sub}</div>
+  </div>`).join('');
+
+/* ---------- Chart helpers ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+function svgEl(tag, attrs) {
+  const el = document.createElementNS(NS, tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
+}
+function baseChart(container, W, H, PAD) {
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img' });
+  container.appendChild(svg);
+  return svg;
+}
+function monthTicks(dates) {
+  const ticks = [];
+  let prev = '';
+  dates.forEach((d, i) => {
+    const m = d.slice(0, 7);
+    if (m !== prev) { ticks.push({ i, label: fmtShort(d) }); prev = m; }
+  });
+  return ticks;
+}
+
+/* ---------- Indexation chart ---------- */
+(function () {
+  const W = 960, H = 300, P = { l: 44, r: 16, t: 16, b: 34 };
+  const svg = baseChart($('chart-coverage'), W, H);
+  const xs = cov.map(c => c.date);
+  const maxY = Math.max(sitePages || 0, ...cov.map(c => c.indexed || 0)) * 1.15;
+  const x = (i) => P.l + i * (W - P.l - P.r) / Math.max(1, xs.length - 1);
+  const y = (v) => H - P.b - (v / maxY) * (H - P.t - P.b);
+
+  for (let g = 0; g <= 4; g++) {
+    const v = Math.round(maxY / 4 * g);
+    svg.appendChild(svgEl('line', { x1: P.l, x2: W - P.r, y1: y(v), y2: y(v), stroke: '#EFEAE1', 'stroke-width': 1 }));
+    const t = svgEl('text', { x: P.l - 8, y: y(v) + 4, 'text-anchor': 'end', 'font-size': 11, fill: '#9A938A' });
+    t.textContent = v; svg.appendChild(t);
+  }
+  monthTicks(xs).forEach(tk => {
+    const t = svgEl('text', { x: x(tk.i), y: H - 10, 'text-anchor': 'middle', 'font-size': 11, fill: '#9A938A' });
+    t.textContent = tk.label; svg.appendChild(t);
+  });
+
+  function line(key, color, fill) {
+    const pts = cov.map((c, i) => `${x(i)},${y(c[key] || 0)}`).join(' ');
+    if (fill) {
+      const area = `M ${x(0)},${y(0)} L ` + pts.replaceAll(' ', ' L ') + ` L ${x(cov.length - 1)},${y(0)} Z`;
+      svg.appendChild(svgEl('path', { d: area, fill: fill, stroke: 'none' }));
+    }
+    svg.appendChild(svgEl('polyline', { points: pts, fill: 'none', stroke: color, 'stroke-width': 2 }));
+    const last = cov[cov.length - 1];
+    svg.appendChild(svgEl('circle', { cx: x(cov.length - 1), cy: y(last[key] || 0), r: 4, fill: color }));
+    const lbl = svgEl('text', { x: x(cov.length - 1) - 8, y: y(last[key] || 0) - 10, 'text-anchor': 'end', 'font-size': 13, 'font-weight': 700, fill: color });
+    lbl.textContent = last[key]; svg.appendChild(lbl);
+  }
+  line('indexed', '#4A6B5D', 'rgba(74,107,93,0.08)');
+
+  if (sitePages) {
+    svg.appendChild(svgEl('line', { x1: P.l, x2: W - P.r, y1: y(sitePages), y2: y(sitePages),
+      stroke: '#4A6B5D', 'stroke-width': 1.5, 'stroke-dasharray': '7 5', opacity: 0.7 }));
+    const t = svgEl('text', { x: P.l + 4, y: y(sitePages) - 6, 'font-size': 11.5, fill: '#4A6B5D', 'font-weight': 600 });
+    t.textContent = `Total du site : ${sitePages} pages`; svg.appendChild(t);
+  }
+})();
+
+/* ---------- Perf chart ---------- */
+(function () {
+  const W = 960, H = 260, P = { l: 44, r: 16, t: 14, b: 34 };
+  const svg = baseChart($('chart-perf'), W, H);
+  const xs = perf.map(p => p.date);
+  const maxY = Math.max(2, ...perf.map(p => p.impressions || 0)) * 1.2;
+  const x = (i) => P.l + i * (W - P.l - P.r) / Math.max(1, xs.length - 1);
+  const y = (v) => H - P.b - (v / maxY) * (H - P.t - P.b);
+  const bw = Math.max(2, (W - P.l - P.r) / xs.length * 0.55);
+
+  for (let g = 0; g <= 3; g++) {
+    const v = Math.round(maxY / 3 * g);
+    svg.appendChild(svgEl('line', { x1: P.l, x2: W - P.r, y1: y(v), y2: y(v), stroke: '#EFEAE1', 'stroke-width': 1 }));
+    const t = svgEl('text', { x: P.l - 8, y: y(v) + 4, 'text-anchor': 'end', 'font-size': 11, fill: '#9A938A' });
+    t.textContent = v; svg.appendChild(t);
+  }
+  monthTicks(xs).forEach(tk => {
+    const t = svgEl('text', { x: x(tk.i), y: H - 10, 'text-anchor': 'middle', 'font-size': 11, fill: '#9A938A' });
+    t.textContent = tk.label; svg.appendChild(t);
+  });
+  perf.forEach((p, i) => {
+    if (p.impressions) svg.appendChild(svgEl('rect', {
+      x: x(i) - bw / 2, y: y(p.impressions), width: bw, height: y(0) - y(p.impressions),
+      fill: '#A98B4F', opacity: 0.55, rx: 1 }));
+  });
+  perf.forEach((p, i) => {
+    if (p.clicks) svg.appendChild(svgEl('circle', { cx: x(i), cy: y(p.clicks), r: 3.5, fill: '#4A6B5D' }));
+  });
+})();
+
+/* ---------- Tables ---------- */
+const snap = DATA.snapshots[DATA.snapshots.length - 1];
+const pill = (pos) => {
+  const cls = pos <= 10 ? 'p1' : pos <= 30 ? 'p2' : 'p3';
+  return `<span class="pill ${cls}">${Math.round(pos)}</span>`;
+};
+
+/* ---------- Sparklines position (par requête, sur les exports successifs) ---------- */
+const normQ = (s) => s.trim().toLowerCase();
+const posByDate = DATA.snapshots.map(s => {
+  const m = {};
+  s.queries.forEach(q => { m[normQ(q.name)] = q.position; });
+  return m;
+});
+const querySeries = (name) => {
+  const key = normQ(name);
+  return posByDate.map(m => (key in m ? m[key] : null));
+};
+const posByDatePages = DATA.snapshots.map(s => {
+  const m = {};
+  s.pages.forEach(p => { m[normQ(p.name)] = p.position; });
+  return m;
+});
+const pageSeries = (name) => {
+  const key = normQ(name);
+  return posByDatePages.map(m => (key in m ? m[key] : null));
+};
+function sparkline(series) {
+  const W = 76, H = 22, pad = 4;
+  const N = series.length;
+  const present = series.map((v, i) => ({ i, v })).filter(p => p.v != null);
+  if (present.length === 0) return '';
+  const vals = present.map(p => p.v);
+  const mn = Math.min(...vals), mx = Math.max(...vals);
+  const x = (i) => N > 1 ? pad + i * (W - 2 * pad) / (N - 1) : W / 2;
+  const y = (v) => (mx === mn) ? H / 2 : pad + (v - mn) / (mx - mn) * (H - 2 * pad); // position basse (meilleure) en haut
+  let svg = `<svg class="spark" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-hidden="true">`;
+  for (let k = 1; k < present.length; k++) {
+    const a = present[k - 1], b = present[k];
+    if (b.i - a.i === 1) { // relevés consécutifs seulement ; sinon on laisse le trou
+      svg += `<line x1="${x(a.i)}" y1="${y(a.v)}" x2="${x(b.i)}" y2="${y(b.v)}" stroke="#B8AE9E" stroke-width="1.5" stroke-linecap="round"/>`;
+    }
+  }
+  present.forEach((p, idx) => {
+    const isLast = idx === present.length - 1;
+    const col = isLast ? (p.v <= 10 ? '#4A6B5D' : p.v <= 30 ? '#B07D3C' : '#9A938A') : '#C9C0B2';
+    svg += `<circle cx="${x(p.i)}" cy="${y(p.v)}" r="${isLast ? 2.8 : 2}" fill="${col}"/>`;
+  });
+  svg += `</svg>`;
+  return svg;
+}
+
+$('queries-sub').textContent = `Ce que les internautes ont tapé quand le site est apparu · 3 derniers mois (export du ${fmtDate(snap.exportDate)}).`;
+$('tbl-queries').querySelector('tbody').innerHTML = snap.queries.map(q => `
+  <tr><td class="q">${q.name}</td><td class="num">${q.impressions}</td><td class="num">${q.clicks}</td><td class="num">${pill(q.position)}</td><td class="spark-cell">${sparkline(querySeries(q.name))}</td></tr>`).join('');
+
+$('pages-sub').textContent = `Top ${Math.min(10, snap.pages.length)} par impressions · export du ${fmtDate(snap.exportDate)}.`;
+$('tbl-pages').querySelector('tbody').innerHTML = snap.pages.slice(0, 10).map(p => {
+  const path = p.name.replace('https://sammahealth.com', '') || '/';
+  return `<tr><td class="url"><span class="host">sammahealth.com</span><span class="path">${path}</span></td>
+    <td class="num">${p.impressions}</td><td class="num">${p.clicks}</td><td class="num">${pill(p.position)}</td><td class="spark-cell">${sparkline(pageSeries(p.name))}</td></tr>`;
+}).join('');
+
+/* ---------- Fréquentation (Google Analytics) ---------- */
+if (DATA.analytics) {
+  const ga = DATA.analytics;
+  $('ga-section').hidden = false;
+  $('ga-sub').textContent = `Ce que font les visiteurs une fois sur le site · Google Analytics · ${fmtDate(ga.rangeStart)} au ${fmtDate(ga.rangeEnd)}.`;
+
+  const totSessions = ga.channels.reduce((s, c) => s + c.sessions, 0);
+  const totEngaged = ga.channels.reduce((s, c) => s + c.engaged, 0);
+  const mob = ga.devices.find(d => d.name === 'mobile');
+  const totDev = ga.devices.reduce((s, d) => s + d.users, 0);
+  const gaKpis = [
+    { label: 'Sessions · 3 mois', value: totSessions, sub: 'visites du site' },
+    { label: 'Taux d’engagement', value: Math.round(totEngaged / totSessions * 100) + '%', sub: 'visites avec interaction réelle' },
+    { label: 'Vues de pages', value: ga.prodViews, sub: 'site public uniquement' },
+    { label: 'Sur mobile', value: mob ? Math.round(mob.users / totDev * 100) + '%' : 'n/d', sub: 'des visiteurs' },
+  ];
+  $('ga-kpis').innerHTML = gaKpis.map(k => `
+    <div class="kpi"><div class="label">${k.label}</div><div class="value">${k.value}</div><div class="sub">${k.sub}</div></div>`).join('');
+
+  const CHANNEL_FR = { 'Direct': 'Accès direct', 'Organic Search': 'Recherche Google', 'Organic Social': 'Réseaux sociaux',
+                       'Referral': 'Sites référents', 'Unassigned': 'Non attribué', 'Paid Search': 'Recherche payante',
+                       'Email': 'E-mail', 'Organic Video': 'Vidéo' };
+  $('tbl-channels').querySelector('tbody').innerHTML = ga.channels.map(c => `
+    <tr><td class="q">${CHANNEL_FR[c.name] || c.name}</td><td class="num">${c.sessions}</td><td class="num">${c.engagementRate}%</td></tr>`).join('');
+
+  const PAYS_FR = { 'Switzerland': 'Suisse', 'France': 'France', 'Germany': 'Allemagne', 'Lithuania': 'Lituanie',
+                    'China': 'Chine', 'Japan': 'Japon', 'Malaysia': 'Malaisie', 'United Kingdom': 'Royaume-Uni',
+                    'United States': 'États-Unis', 'Italy': 'Italie', 'Spain': 'Espagne', 'Belgium': 'Belgique' };
+  $('tbl-countries').querySelector('tbody').innerHTML = ga.countries.slice(0, 8).map(c => `
+    <tr><td class="q">${PAYS_FR[c.name] || c.name}</td><td class="num">${c.users}</td><td class="num">${c.newUsers}</td></tr>`).join('');
+
+  $('tbl-ga-pages').querySelector('tbody').innerHTML = ga.pagesProd.slice(0, 8).map(p => `
+    <tr><td class="url"><span class="host">sammahealth.com</span><span class="path">${p.path}</span></td>
+      <td class="num">${p.views}</td><td class="num">${p.users}</td></tr>`).join('');
+
+  $('ga-note').textContent = `Chiffres bruts : ils incluent encore les visites de l’équipe pendant la construction du site (accès direct et versions de travail, ${ga.stagingViews} vues exclues du tableau ci-dessus). Un filtrage à la source est prévu pour isoler le trafic réel des visiteurs.`;
+}
+
+</script>
+
+</body></html>
