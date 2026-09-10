@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none">
+  <defs>
+    <!-- Warm white glow matching the homepage logoBreath -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="b1"/>
+      <feColorMatrix in="b1" type="matrix"
+        values="0 0 0 0 1
+                0 0 0 0 0.90
+                0 0 0 0 0.74
+                0 0 0 0 0.85 0" result="warm"/>
+      <feGaussianBlur stdDeviation="12" in="SourceGraphic" result="b2"/>
+      <feColorMatrix in="b2" type="matrix"
+        values="0 0 0 0 1
+                0 0 0 0 0.84
+                0 0 0 0 0.66
+                0 0 0 0 0.50 0" result="warm2"/>
+      <feMerge>
+        <feMergeNode in="warm2"/>
+        <feMergeNode in="warm"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Red Sea of Sand backdrop — lighter, truer to the actual site background -->
+    <radialGradient id="seaOfSand" cx="50%" cy="50%" r="75%">
+      <stop offset="0%"  stop-color="#9E6050"/>
+      <stop offset="50%" stop-color="#86493A"/>
+      <stop offset="100%" stop-color="#723D2E"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Tile background -->
+  <rect width="300" height="300" rx="36" ry="36" fill="url(#seaOfSand)"/>
+
+  <!-- The M from Samma logo, scaled down for breathing room -->
+  <g filter="url(#glow)" transform="translate(150, 150) scale(0.85) translate(-150, -150)">
+    <g transform="translate(30, 51)">
+      <path d="M672.28 234.026H648.539L622.218 77.1391L548.484 239.147H543.189L469.786 73.9912L443.808 234.026H432.359L464.451 36.668H476.468L551.806 205.45L627.789 36.668H639.868L672.28 234.026Z" fill="#ffffff"
+        transform="translate(-432, -36) scale(1.0)"/>
+    </g>
+  </g>
+</svg>
