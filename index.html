@@ -182,7 +182,7 @@
         <div class="sm-tip" id="ov-tip"></div>
       </div>
       <div class="legend" id="ov-legend"></div>
-      <p class="note">Les trois courbes sont <strong>normalisées</strong> pour tenir sur un même repère (chacune ramenée à sa propre amplitude)&nbsp;: vers le haut = plus d'apparitions, plus de clics, ou meilleure position (l'échelle de la position est inversée, 1 = première place). Les valeurs réelles s'affichent au survol. Lecture clé&nbsp;: des apparitions qui baissent ne sont pas un problème si, en parallèle, les clics montent et la position s'améliore. C'est le signe que Google concentre le site sur les recherches où il est vraiment pertinent.</p>
+      <p class="note">Deux échelles&nbsp;: à <strong>gauche</strong>, les comptes réels (apparitions et clics)&nbsp;; à <strong>droite</strong>, la position moyenne réelle, <strong>inversée</strong> (1 = première place, en haut). Ainsi, pour les trois courbes, vers le haut = mieux. Les valeurs exactes de chaque semaine s'affichent au survol. Lecture clé&nbsp;: des apparitions qui baissent ne sont pas un problème si, en parallèle, les clics montent et la position s'améliore. C'est le signe que Google concentre le site sur les recherches où il est vraiment pertinent.</p>
     </div>
   </section>
 
@@ -440,7 +440,7 @@ function monthTicks(dates) {
   });
 })();
 
-/* ---------- Vue d'ensemble : 3 courbes sur un repere unique (normalisees) ---------- */
+/* ---------- Vue d'ensemble : 3 courbes, double axe (comptes a gauche, position a droite) ---------- */
 (function () {
   function wkMonday(iso) {
     const [y, m, d] = iso.split('-').map(Number);
@@ -468,69 +468,83 @@ function monthTicks(dates) {
   const fi = weeks.findIndex(w => w.imp > 0 || w.clk > 0);
   if (fi > 0) weeks = weeks.slice(fi);
   const lastData = perf.reduce((m, p) => p.date > m ? p.date : m, '0');
-  while (weeks.length > 1 && weeks[weeks.length - 1].end > lastData) weeks.pop(); // retire la semaine de fin incomplète
+  while (weeks.length > 1 && weeks[weeks.length - 1].end > lastData) weeks.pop();
   const N = weeks.length;
   if (!N) return;
 
-  const W = 940, H = 320, P = { l: 36, r: 16, t: 16, b: 40 };
+  const W = 940, H = 320, P = { l: 40, r: 50, t: 20, b: 40 };
   const xw = (W - P.l - P.r) / Math.max(1, N);
   const xc = (i) => P.l + xw * (i + 0.5);
-  const yPix = (nrm) => H - P.b - nrm * (H - P.t - P.b);
 
-  const imps = weeks.map(w => w.imp), clks = weeks.map(w => w.clk);
-  const minImp = Math.min(...imps), maxImp = Math.max(...imps);
-  const minClk = Math.min(...clks), maxClk = Math.max(...clks);
-  const posV = weeks.filter(w => w.pos != null).map(w => w.pos);
-  const minPos = Math.min(...posV), maxPos = Math.max(...posV);
-  const nImp = v => (maxImp === minImp) ? 0.5 : (v - minImp) / (maxImp - minImp);
-  const nClk = v => (maxClk === minClk) ? 0.5 : (v - minClk) / (maxClk - minClk);
-  const nPos = v => (maxPos === minPos) ? 0.5 : (maxPos - v) / (maxPos - minPos); // meilleure position en haut
+  // axe gauche : comptes (apparitions + clics, meme unite)
+  const maxCount = Math.max(1, ...weeks.map(w => w.imp));
+  const niceTop = (m) => { const p = Math.pow(10, Math.floor(Math.log10(m))); for (const k of [1, 2, 2.5, 5, 10]) if (m <= k * p) return k * p; return 10 * p; };
+  const cTop = niceTop(maxCount);
+  const yL = (v) => H - P.b - (v / cTop) * (H - P.t - P.b);
+
+  // axe droit : position, INVERSEE (1 = en haut)
+  const maxPos = Math.max(...weeks.filter(w => w.pos != null).map(w => w.pos));
+  const posBot = Math.max(10, Math.ceil(maxPos / 10) * 10), posTop = 1;
+  const yR = (v) => H - P.b - ((posBot - v) / (posBot - posTop)) * (H - P.t - P.b);
 
   const COL = { imp: '#A98B4F', clk: '#4A6B5D', pos: '#9C5B8A' };
   const svg = baseChart($('ov-chart'), W, H);
 
-  [0, 0.5, 1].forEach(g => svg.appendChild(svgEl('line', { x1: P.l, x2: W - P.r, y1: yPix(g), y2: yPix(g), stroke: '#EFEAE1', 'stroke-width': 1 })));
+  // grille + axe gauche
+  const nG = 4;
+  for (let g = 0; g <= nG; g++) {
+    const v = cTop / nG * g, yy = yL(v);
+    svg.appendChild(svgEl('line', { x1: P.l, x2: W - P.r, y1: yy, y2: yy, stroke: '#EFEAE1', 'stroke-width': 1 }));
+    const t = svgEl('text', { x: P.l - 7, y: yy + 4, 'text-anchor': 'end', 'font-size': 10.5, fill: '#9A938A' });
+    t.textContent = Math.round(v); svg.appendChild(t);
+  }
+  // axe droit (position) : etiquettes seules, en prune
+  [posTop, Math.round(posBot / 2), posBot].forEach(v => {
+    const t = svgEl('text', { x: W - P.r + 7, y: yR(v) + 4, 'font-size': 10.5, fill: COL.pos });
+    t.textContent = v; svg.appendChild(t);
+  });
+  const la = svgEl('text', { x: 2, y: P.t - 7, 'font-size': 10, fill: '#9A938A' }); la.textContent = 'nombre'; svg.appendChild(la);
+  const ra = svgEl('text', { x: W - P.r + 7, y: P.t - 7, 'font-size': 10, fill: COL.pos }); ra.textContent = 'position'; svg.appendChild(ra);
+  const rb = svgEl('text', { x: W - P.r + 7, y: P.t + 7, 'font-size': 9.5, fill: '#C3B2C1' }); rb.textContent = '↑ mieux'; svg.appendChild(rb);
+
   const mt = monthTicks(weeks.map(w => w.start));
   mt.forEach(tk => {
     if (tk.i > 0) svg.appendChild(svgEl('line', { x1: P.l + xw * tk.i, x2: P.l + xw * tk.i, y1: P.t, y2: H - P.b, stroke: '#F3EEE6', 'stroke-width': 1 }));
     const t = svgEl('text', { x: P.l + xw * tk.i + 3, y: H - P.b + 16, 'font-size': 10.5, fill: '#9A938A' });
     t.textContent = tk.label.replace(/^\d+\s/, ''); svg.appendChild(t);
   });
-  [['↑', P.t + 10], ['↓', H - P.b - 2]].forEach(([s, yy]) => {
-    const t = svgEl('text', { x: 13, y: yy, 'font-size': 12, fill: '#C9C0B2', 'text-anchor': 'middle' });
-    t.textContent = s; svg.appendChild(t);
-  });
 
   const marks = { imp: [], clk: [], pos: [] };
-  function draw(key, nf, opts) {
-    const pts = weeks.map((w, i) => (w[key] != null ? [i, w[key]] : null)).filter(Boolean);
-    for (let j = 1; j < pts.length; j++) {
-      const a = pts[j - 1], b = pts[j];
-      svg.appendChild(svgEl('line', { x1: xc(a[0]), y1: yPix(nf(a[1])), x2: xc(b[0]), y2: yPix(nf(b[1])),
-        stroke: COL[key], 'stroke-width': opts.sw, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: opts.op }));
-    }
-    weeks.forEach((w, i) => {
-      if (w[key] == null) { marks[key][i] = null; return; }
-      let el = null;
-      if (opts.mk === 'circle') el = svgEl('circle', { cx: xc(i), cy: yPix(nf(w[key])), r: 2.4, fill: COL[key] });
-      else if (opts.mk === 'square') { const s = 4.4; el = svgEl('rect', { x: xc(i) - s / 2, y: yPix(nf(w[key])) - s / 2, width: s, height: s, fill: COL[key] }); }
-      if (el) svg.appendChild(el);
-      marks[key][i] = el;
-    });
+  function drawCount(key, sw, mk) {
+    for (let i = 1; i < N; i++)
+      svg.appendChild(svgEl('line', { x1: xc(i - 1), y1: yL(weeks[i - 1][key]), x2: xc(i), y2: yL(weeks[i][key]), stroke: COL[key], 'stroke-width': sw, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+    weeks.forEach((w, i) => { let el = null; if (mk === 'circle') { el = svgEl('circle', { cx: xc(i), cy: yL(w[key]), r: 2.4, fill: COL[key] }); svg.appendChild(el); } marks[key][i] = el; });
   }
-  draw('imp', nImp, { sw: 2, op: 0.9, mk: null });
-  draw('clk', nClk, { sw: 2.4, op: 1, mk: 'circle' });
-  draw('pos', nPos, { sw: 2.4, op: 1, mk: 'square' });
+  function drawPos() {
+    const pts = weeks.map((w, i) => w.pos != null ? [i, w.pos] : null).filter(Boolean);
+    for (let j = 1; j < pts.length; j++) { const a = pts[j - 1], b = pts[j]; if (b[0] - a[0] === 1) svg.appendChild(svgEl('line', { x1: xc(a[0]), y1: yR(a[1]), x2: xc(b[0]), y2: yR(b[1]), stroke: COL.pos, 'stroke-width': 2.4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' })); }
+    weeks.forEach((w, i) => { let el = null; if (w.pos != null) { const s = 4.4; el = svgEl('rect', { x: xc(i) - s / 2, y: yR(w.pos) - s / 2, width: s, height: s, fill: COL.pos }); svg.appendChild(el); } marks.pos[i] = el; });
+  }
+  drawCount('imp', 2, null);
+  drawCount('clk', 2.4, 'circle');
+  drawPos();
+
+  const moisF = ['janv.','fevr.','mars','avr.','mai','juin','juil.','aout','sept.','oct.','nov.','dec.'];
+  const dm = (iso) => { const [, m, d] = iso.split('-'); return `${+d} ${moisF[+m - 1]}`; };
+  const fmtPos = (v) => v == null ? '–' : v.toFixed(1).replace('.', ',');
+
+  const lw = weeks[N - 1];
+  const endLabel = (x, y, txt, col) => { const t = svgEl('text', { x, y, 'font-size': 11.5, 'font-weight': 700, fill: col, 'text-anchor': 'middle' }); t.textContent = txt; svg.appendChild(t); };
+  endLabel(xc(N - 1), yL(lw.imp) - 7, lw.imp, COL.imp);
+  endLabel(xc(N - 1), yL(lw.clk) - 7, lw.clk, COL.clk);
+  if (lw.pos != null) endLabel(xc(N - 1), yR(lw.pos) - 8, fmtPos(lw.pos), COL.pos);
 
   const guide = svgEl('line', { x1: P.l, x2: P.l, y1: P.t, y2: H - P.b, stroke: '#26221C', 'stroke-width': 1, opacity: 0, 'stroke-dasharray': '3 3' });
   svg.appendChild(guide);
   const tip = $('ov-tip'), wrap = $('overview');
-  const moisF = ['janv.','fevr.','mars','avr.','mai','juin','juil.','aout','sept.','oct.','nov.','dec.'];
-  const dm = (iso) => { const [, m, d] = iso.split('-'); return `${+d} ${moisF[+m - 1]}`; };
-  const fmtPos = (v) => v == null ? '–' : v.toFixed(1).replace('.', ',');
   function enlarge(i) {
     marks.clk.forEach((el, j) => el && el.setAttribute('r', j === i ? 4 : 2.4));
-    marks.pos.forEach((el, j) => { if (!el) return; const s = j === i ? 7 : 4.4; el.setAttribute('width', s); el.setAttribute('height', s); el.setAttribute('x', xc(j) - s / 2); el.setAttribute('y', yPix(nPos(weeks[j].pos)) - s / 2); });
+    marks.pos.forEach((el, j) => { if (!el) return; const s = j === i ? 7 : 4.4; el.setAttribute('width', s); el.setAttribute('height', s); el.setAttribute('x', xc(j) - s / 2); el.setAttribute('y', yR(weeks[j].pos) - s / 2); });
   }
   function setActive(i, evt) {
     const w = weeks[i];
@@ -574,7 +588,6 @@ function monthTicks(dates) {
     const d = r - p;
     return d < -0.5 ? chip('up', `▲ meilleure (${d.toFixed(1).replace('.', ',')})`) : d > 0.5 ? chip('down', `▼ moins bonne (+${d.toFixed(1).replace('.', ',')})`) : chip('flat', '≈ stable');
   }
-  const lw = weeks[N - 1];
   $('ov-legend').innerHTML =
     `<span><i class="lg-ln" style="color:${COL.imp}"></i>Apparitions&nbsp;<b>${lw.imp}</b>&nbsp;${trCount('imp')}</span>` +
     `<span><i class="dot" style="background:${COL.clk}"></i>Clics&nbsp;<b>${lw.clk}</b>&nbsp;${trCount('clk')}</span>` +
